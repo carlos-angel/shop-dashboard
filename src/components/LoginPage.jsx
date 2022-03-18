@@ -1,15 +1,28 @@
 import { useRef } from "react";
+import { useRouter } from "next/router";
 import { LockClosedIcon } from "@heroicons/react/solid";
+import { useAuth } from "@hooks/useAuth";
+import { useAlert } from "@hooks/useAlert";
 
 export default function LoginPage() {
   const emailRef = useRef();
   const passwordRef = useRef();
+  const { signIn } = useAuth();
+  const { showMessage } = useAlert();
+  const router = useRouter();
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
+    showMessage({ type: "", message: "" });
     e.preventDefault();
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
-    console.log({ email, password });
+    try {
+      const email = emailRef.current.value;
+      const password = passwordRef.current.value;
+      const { error, message } = await signIn(email, password);
+      if (error) showMessage({ type: "danger", message });
+      else router.push("/dashboard");
+    } catch (error) {
+      showMessage({ type: "danger", message: "Ops! Algo salio mal. Inténtelo más tarde." });
+    }
   };
 
   return (
