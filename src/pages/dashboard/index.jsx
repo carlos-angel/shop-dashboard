@@ -1,10 +1,30 @@
 import useFetch from "@hooks/useFetch";
 import endpoints from "@services/api";
+import { Chart } from "@common/Chart";
 
 export default function Dashboard() {
   const [products] = useFetch(endpoints.products.getProducts(10, 5));
+
+  const categoryNames = products?.map((product) => product.category);
+  const categoryCount = categoryNames?.map((category) => category.name);
+
+  const countOccurrences = (arr) =>
+    arr.reduce((prev, curr) => ((prev[curr] = ++prev[curr] || 1), prev), {});
+
+  const data = {
+    datasets: [
+      {
+        label: "Categories",
+        data: countOccurrences(categoryCount),
+        borderWidth: 2,
+        backgroundColor: ["#ffbb11", "#c0c0c0", "#50AF95", "#a4ba2f", "#2a71d0"],
+      },
+    ],
+  };
+
   return (
     <>
+      {products.length !== 0 && <Chart chartData={data} className="mt-2 mb-8" />}
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
