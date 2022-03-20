@@ -22,7 +22,7 @@ export default function Alert({ type, message, onClose }) {
   }
 
   return (
-    <div className={`border px-4 py-3 rounded relative ${colors}`} role="alert">
+    <div className={`border px-4 py-3 rounded relative mb-5 ${colors}`} role="alert">
       <strong className="font-bold">{typeMessage}</strong>
       <span className="block sm:inline">{message}</span>
       <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
