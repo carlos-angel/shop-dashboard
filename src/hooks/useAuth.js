@@ -2,9 +2,10 @@ import React, { useState, useContext, createContext } from "react";
 import Cookie from "js-cookie";
 import axios from "axios";
 import endpoints from "@services/api";
+import { useRouter } from "next/router";
 
 // eslint-disable-next-line no-unused-vars
-const AutContext = createContext({ user: {}, signIn: (email, password) => {} });
+const AutContext = createContext({ user: {}, signIn: (email, password) => {}, logout: () => {} });
 
 export function ProviderAuth({ children }) {
   const auth = useProvideAuth();
@@ -14,6 +15,8 @@ export function ProviderAuth({ children }) {
 export const useAuth = () => useContext(AutContext);
 
 function useProvideAuth() {
+  const router = useRouter();
+
   const [user, setUser] = useState(null);
 
   const signIn = async (email, password) => {
@@ -45,5 +48,12 @@ function useProvideAuth() {
     }
   };
 
-  return { user, signIn };
+  const logout = () => {
+    Cookie.remove("token");
+    setUser(null);
+    delete axios.defaults.headers.Authorization;
+    router.push("/login");
+  };
+
+  return { user, signIn, logout };
 }

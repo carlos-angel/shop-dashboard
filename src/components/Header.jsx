@@ -9,18 +9,13 @@ const navigation = [
   { name: "Productos", href: "/dashboard/products/", current: false },
   { name: "Ventas", href: "#", current: false },
 ];
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Header() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const userData = {
     name: user?.name,
@@ -90,21 +85,20 @@ export default function Header() {
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="absolute right-0 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          {userNavigation.map((item) => (
-                            <Menu.Item key={item.name}>
-                              {({ active }) => (
-                                <a
-                                  href={item.href}
-                                  className={classNames(
-                                    active ? "bg-gray-100" : "",
-                                    "block px-4 py-2 text-sm text-gray-700"
-                                  )}
-                                >
-                                  {item.name}
-                                </a>
-                              )}
-                            </Menu.Item>
-                          ))}
+                          <Menu.Item>
+                            {({ active }) => (
+                              <span
+                                aria-hidden
+                                onClick={logout}
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                                )}
+                              >
+                                Sign out
+                              </span>
+                            )}
+                          </Menu.Item>
                         </Menu.Items>
                       </Transition>
                     </Menu>
@@ -164,17 +158,13 @@ export default function Header() {
                     <BellIcon className="w-6 h-6" aria-hidden="true" />
                   </button>
                 </div>
-                <div className="px-2 mt-3 space-y-1">
-                  {userNavigation.map((item) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className="block px-3 py-2 text-base font-medium text-gray-400 rounded-md hover:text-white hover:bg-gray-700"
-                    >
-                      {item.name}
-                    </Disclosure.Button>
-                  ))}
+                <div className="px-2 mt-3 space-y-1" onClick={logout} aria-hidden>
+                  <Disclosure.Button
+                    as="span"
+                    className="block px-3 py-2 text-base font-medium text-gray-400 rounded-md hover:text-white hover:bg-gray-700 cursor-pointer"
+                  >
+                    Sign out
+                  </Disclosure.Button>
                 </div>
               </div>
             </Disclosure.Panel>
