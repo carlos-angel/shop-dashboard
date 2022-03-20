@@ -1,7 +1,10 @@
+import { useAlert } from "@hooks/useAlert";
+import { addProduct } from "@services/api/products.api";
 import { useRef } from "react";
 
-export default function FormProduct() {
+export default function FormProduct({ setOpen, setReload }) {
   const formRef = useRef(null);
+  const { showMessage } = useAlert();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -13,7 +16,15 @@ export default function FormProduct() {
       categoryId: parseInt(formData.get("category")),
       images: [formData.get("images").name],
     };
-    console.log(data);
+    addProduct(data)
+      .then(() => {
+        showMessage({ type: "success", message: "Product added successfully" });
+        setReload(true);
+        setOpen(false);
+      })
+      .catch((err) => {
+        showMessage({ type: "danger", message: err.message });
+      });
   };
 
   return (
