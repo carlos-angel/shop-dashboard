@@ -4,7 +4,7 @@ const INITIAL_STATE = {
   alert: { type: "", message: "" },
   onClose: () => {},
   // eslint-disable-next-line no-unused-vars
-  showMessage: (type, message) => {},
+  showMessage: ({ type, message }) => {},
 };
 const AlertContext = createContext(INITIAL_STATE);
 
