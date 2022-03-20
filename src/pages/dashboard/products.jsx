@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { PlusIcon } from "@heroicons/react/solid";
 import Modal from "@common/Modal";
+import FormProduct from "@components/FormProduct";
 
-export default function products() {
+export default function Products() {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -26,7 +27,7 @@ export default function products() {
         </div>
       </div>
       <Modal open={open} setOpen={setOpen}>
-        <h1>Hola mundo</h1>
+        <FormProduct />
       </Modal>
     </>
   );
