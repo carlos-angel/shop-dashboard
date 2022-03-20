@@ -1,9 +1,11 @@
 import { useAlert } from "@hooks/useAlert";
-import { addProduct } from "@services/api/products.api";
+import { addProduct, editProduct } from "@services/api/products.api";
 import { useRef } from "react";
+import { useRouter } from "next/router";
 
-export default function FormProduct({ setOpen, setReload }) {
+export default function FormProduct({ setOpen, setReload, product }) {
   const formRef = useRef(null);
+  const router = useRouter();
   const { showMessage } = useAlert();
 
   const handleSubmit = (event) => {
@@ -16,15 +18,26 @@ export default function FormProduct({ setOpen, setReload }) {
       categoryId: parseInt(formData.get("category")),
       images: [formData.get("images").name],
     };
-    addProduct(data)
-      .then(() => {
-        showMessage({ type: "success", message: "Product added successfully" });
-        setReload(true);
-        setOpen(false);
-      })
-      .catch((err) => {
-        showMessage({ type: "danger", message: err.message });
-      });
+    if (product) {
+      editProduct({ id: product.id, body: data })
+        .then(() => {
+          showMessage({ type: "success", message: "Product updated successfully" });
+          router.push("/dashboard/products");
+        })
+        .catch((err) => {
+          showMessage({ type: "danger", message: err.message });
+        });
+    } else {
+      addProduct(data)
+        .then(() => {
+          showMessage({ type: "success", message: "Product added successfully" });
+          setReload(true);
+          setOpen(false);
+        })
+        .catch((err) => {
+          showMessage({ type: "danger", message: err.message });
+        });
+    }
   };
 
   return (
@@ -40,6 +53,7 @@ export default function FormProduct({ setOpen, setReload }) {
                 type="text"
                 name="title"
                 id="title"
+                defaultValue={product?.title}
                 className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
@@ -51,6 +65,7 @@ export default function FormProduct({ setOpen, setReload }) {
                 type="number"
                 name="price"
                 id="price"
+                defaultValue={product?.price}
                 className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
@@ -61,6 +76,7 @@ export default function FormProduct({ setOpen, setReload }) {
               <select
                 id="category"
                 name="category"
+                defaultValue={product?.category}
                 autoComplete="category-name"
                 className="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               >
@@ -78,6 +94,7 @@ export default function FormProduct({ setOpen, setReload }) {
               </label>
               <textarea
                 name="description"
+                defaultValue={product?.description}
                 id="description"
                 autoComplete="description"
                 rows="3"
@@ -109,7 +126,13 @@ export default function FormProduct({ setOpen, setReload }) {
                         className="relative font-medium text-indigo-600 bg-white rounded-md cursor-pointer hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                       >
                         <span>Upload a file</span>
-                        <input id="images" name="images" type="file" className="sr-only" />
+                        <input
+                          id="images"
+                          name="images"
+                          defaultValue={product?.images}
+                          type="file"
+                          className="sr-only"
+                        />
                       </label>
                       <p className="pl-1">or drag and drop</p>
                     </div>

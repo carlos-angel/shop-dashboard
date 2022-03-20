@@ -1,11 +1,13 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { useState, useEffect } from "react";
-import { PlusIcon, XCircleIcon } from "@heroicons/react/solid";
+import { PlusIcon, XCircleIcon, PencilAltIcon } from "@heroicons/react/solid";
 import Modal from "@common/Modal";
 import FormProduct from "@components/FormProduct";
 import axios from "axios";
 import endpoints from "@services/api";
 import { deleteProduct } from "@services/api/products.api";
 import { useAlert } from "@hooks/useAlert";
+import Link from "next/link";
 
 export default function Products() {
   const [open, setOpen] = useState(false);
@@ -121,9 +123,11 @@ export default function Products() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                        <a href="/edit" className="text-indigo-600 hover:text-indigo-900">
-                          Edit
-                        </a>
+                        <Link href={`/dashboard/edit/${product.id}`} passHref>
+                          <a>
+                            <PencilAltIcon className="w-6 h-6 text-indigo-400 hover:text-indigo-600" />
+                          </a>
+                        </Link>
                       </td>
                       <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                         <XCircleIcon
