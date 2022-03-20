@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
-import { PlusIcon } from "@heroicons/react/solid";
+import { PlusIcon, XCircleIcon } from "@heroicons/react/solid";
 import Modal from "@common/Modal";
 import FormProduct from "@components/FormProduct";
 import axios from "axios";
 import endpoints from "@services/api";
+import { deleteProduct } from "@services/api/products.api";
+import { useAlert } from "@hooks/useAlert";
 
 export default function Products() {
   const [open, setOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [reload, setReload] = useState(true);
+  const { showMessage } = useAlert();
 
   useEffect(() => {
     if (reload) {
@@ -19,6 +22,15 @@ export default function Products() {
       })();
     }
   }, [reload]);
+
+  const handleDelete = (id) => {
+    deleteProduct(id)
+      .then(() => {
+        showMessage({ type: "success", message: "Delete product successfully" });
+        setReload(true);
+      })
+      .catch((err) => showMessage({ type: "danger", message: err.message }));
+  };
 
   return (
     <>
@@ -114,9 +126,11 @@ export default function Products() {
                         </a>
                       </td>
                       <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                        <a href="/delete" className="text-indigo-600 hover:text-indigo-900">
-                          Delete
-                        </a>
+                        <XCircleIcon
+                          className="flex-shrink-0 w-6 h-6 text-red-400 cursor-pointer"
+                          aria-hidden="true"
+                          onClick={() => handleDelete(product.id)}
+                        />
                       </td>
                     </tr>
                   ))}
